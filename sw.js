@@ -1,6 +1,6 @@
 // Service worker: pełne cache'owanie → aplikacja działa offline po pierwszym uruchomieniu.
 // Lista plików i wersja generowane przez: node tools/build-sw.mjs
-const VERSION = '202611271654';
+const VERSION = '202611271704';
 const CACHE = 'hrvatski-' + VERSION;
 const ASSETS = [
   "./",
@@ -40,6 +40,8 @@ const ASSETS = [
   "./js/store.js",
   "./js/text.js",
   "./js/ui.js",
+  "./js/update.js",
+  "./js/version.js",
   "./js/words.js",
   "./manifest.webmanifest"
 ];
@@ -60,6 +62,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  if (req.cache === 'no-store' || req.cache === 'reload' || new URL(req.url).pathname.endsWith('/sw.js')) return;
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
