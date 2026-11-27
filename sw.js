@@ -1,6 +1,6 @@
 // Service worker: pełne cache'owanie → aplikacja działa offline po pierwszym uruchomieniu.
 // Lista plików i wersja generowane przez: node tools/build-sw.mjs
-const VERSION = '202611271242';
+const VERSION = '202611271635';
 const CACHE = 'hrvatski-' + VERSION;
 const ASSETS = [
   "./",

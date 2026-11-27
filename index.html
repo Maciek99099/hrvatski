@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Hrvatski</title>
 <meta name="description" content="Nauka chorwackiego od zera – trasa przez Zagrzeb. Działa offline.">
 <meta name="theme-color" content="#1b2a31">
@@ -43,10 +43,31 @@
 <link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1488x2266.png">
 <link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2266x1488.png">
 <link rel="preload" href="fonts/nunito-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>html,body{background:#1b2a31;color:#f3e6cc;font-family:-apple-system,sans-serif;margin:0}#boot{padding:40px 24px;font-size:17px;line-height:1.5}#boot b{color:#e6b85c}</style>
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-<div id="app"><noscript>Ta aplikacja wymaga JavaScriptu.</noscript></div>
+<div id="app"><div id="boot">Ładowanie… <noscript>Ta aplikacja wymaga JavaScriptu.</noscript></div></div>
+<script>
+document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});
+document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:false});
+(function(){
+  var need=['css/app.css','js/app.js','js/content.js','js/data/curriculum.js','js/data/d01.js','fonts/nunito-latin-800-normal.woff2','icons/icon-180.png','manifest.webmanifest','sw.js'];
+  setTimeout(function(){
+    if(!document.getElementById('boot')) return;
+    var miss=[],n=need.length;
+    need.forEach(function(f){
+      fetch(f,{cache:'no-store'}).then(function(r){if(!r.ok)miss.push(f)}).catch(function(){miss.push(f)}).then(function(){
+        if(--n) return;
+        var b=document.getElementById('boot'); if(!b) return;
+        b.innerHTML = miss.length
+          ? '<b>Brakuje plików na serwerze:</b><br>'+miss.join('<br>')+'<br><br>Wgraj ponownie całą zawartość folderu razem z podfolderami (css, js, js/data, fonts, icons).'
+          : '<b>Pliki są na miejscu, ale aplikacja się nie uruchomiła.</b><br>Odśwież stronę. Jeśli to nie pomoże, prześlij zrzut ekranu.<br><small>'+location.href+'</small>';
+      });
+    });
+  },4000);
+})();
+</script>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>
