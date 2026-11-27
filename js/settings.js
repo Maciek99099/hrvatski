@@ -7,7 +7,7 @@ import { h, $, confirmModal, modal } from './ui.js';
 
 import { toast, sound } from './fx.js';
 import { esc } from './text.js';
-import { VERSION, forceUpdate } from './update.js';
+import { VERSION } from './update.js';
 
 export function applyTheme() {
   const th = state.settings.theme;
@@ -55,7 +55,7 @@ export function renderSettings(root, rerender) {
       <label class="btn">⬆️ ${t('set.import')}<input type="file" accept="application/json,.json" hidden data-import></label>
       <button class="btn danger" data-reset>🗑 ${t('set.reset')}</button></div>
     </section>
-    <section class="card about">${kikiImg(3)}<p>${t('set.about')}</p><p class="muted small">${t('set.version')} ${VERSION} · offline ✓</p><button class="btn" data-update>🔄 ${t('set.update')}</button></section>
+    <section class="card about">${kikiImg(3)}<p>${t('set.about')}</p><p class="muted small">${t('set.version')} ${VERSION} · offline ✓</p></section>
   </div>`);
   root.replaceChildren(el);
 
@@ -70,7 +70,6 @@ export function renderSettings(root, rerender) {
     }
     if (e.target.closest('[data-test]')) speak('Dobar dan! Zovem se Kiki. Drago mi je!');
     if (e.target.closest('[data-export]')) doExport();
-    if (e.target.closest('[data-update]')) { toast(t('set.updating'), 4000); forceUpdate(); }
     if (e.target.closest('[data-reset]')) {
       if (await confirmModal(t('set.resetTitle'), t('set.resetBody'), t('set.reset'), t('cancel'), true)) { resetAll(); toast(t('set.resetDone')); rerender(); }
     }
