@@ -71,7 +71,7 @@ function cityBase(Lo) {
   const r = rng(Lo.d.id), H = Lo.H, lv = Lo.levels, P = n => n.toFixed(1);
   let s = '', bld = '';
   // ulice pionowe (główne i boczne) – kwartały omijają je, więc nic nie jest ucięte
-  const vr = [{ x: C, y0: -10, y1: lv[0].roadY, w: 26 }];
+  const vr = [{ x: Lo.start, y0: -10, y1: lv[0].roadY, w: 26 }];
   lv.forEach((v, k) => {
     const ny = lv[k + 1] ? lv[k + 1].roadY : H + 10;
     vr.push({ x: v.exit, y0: v.roadY, y1: ny, w: 26 });
@@ -147,7 +147,7 @@ function cityBase(Lo) {
   }
   // ulice
   const road = (x0, y0, x1, y1) => `<path d="M${x0} ${y0} L${x1} ${y1}" class="road"/>`;
-  s += road(C, -10, C, lv[0].roadY);
+  s += road(Lo.start, -10, Lo.start, lv[0].roadY);
   lv.forEach((v, k) => {
     s += road(Math.max(-10, v.x0 - 30), v.roadY, Math.min(MW + 10, v.x1 + 30), v.roadY);
     const ny = lv[k + 1] ? lv[k + 1].roadY : H + 10;
@@ -201,7 +201,7 @@ export function renderMap(root, nav) {
       <div class="dhead"><span class="dnum">${d.index + 1}</span><div><b>${esc(d.hr)}</b><small>${esc(L(d))}</small></div>
         <span class="dprog">${d.ready ? `${doneN}/${d.lessons.length}` : t('map.soon')}</span></div>
       <div class="city"><svg class="citysvg" viewBox="0 0 ${MW} ${Lo.H}" preserveAspectRatio="xMidYMin meet">${cityBase(Lo)}${routes(Lo)}</svg><div class="pins"></div>
-      ${locked ? `<div class="lockmsg">${icon('lock', 18)} ${d.ready ? t('map.lockedDistrict') : t('map.soonLong')}</div>` : ''}</div>
+      ${locked ? `<div class="lockmsg" style="top:${(((Lo.levels[1] || Lo.levels[0]).roadY + (Lo.levels[2] || Lo.levels[0]).roadY) / 2 + 10) / Lo.H * 100}%">${icon('lock', 18)} ${d.ready ? t('map.lockedDistrict') : t('map.soonLong')}</div>` : ''}</div>
     </section>`);
     const pins = $('.pins', sec);
     Lo.levels.forEach(v => v.stops.forEach(sp => {
@@ -232,8 +232,8 @@ export function renderMap(root, nav) {
   function placeWalker([x, y], dx = 0) {
     walkerPos = [x, y];
     // stoi obok pinezki (po stronie bliższej środka), na skrzyżowaniu – na środku
-    const atPin = map.querySelector(`.pin[data-x="${x}"][data-y="${y}"]`) && Math.abs(x - C) > 1;
-    const off = atPin ? (x < C ? 22 : -67) : -22;
+    const atPin = !!map.querySelector(`.pin[data-x="${x}"][data-y="${y}"]`);
+    const off = atPin ? (x < MW / 2 ? 22 : -67) : -22;
     walker.style.transform = `translate(${x * scale + off}px, ${y * scale - 56}px)${dx < 0 ? ' scaleX(-1)' : ''}`;
   }
   if (target) {
@@ -248,7 +248,7 @@ export function renderMap(root, nav) {
     const same = prev && prev.city === target.city && prev.pt.k === target.pt.k && prev.pt.x === target.pt.x;
     const tY = target.pt.k < 0 ? 0 : target.city.Lo.levels[target.pt.k].roadY;
     if (!prev || same) placeWalker([target.pt.x, tY]);
-    else walk(routeBetween(target.city.Lo, prev.city === target.city ? prev.pt : { k: -1, x: C }, target.pt));
+    else walk(routeBetween(target.city.Lo, prev.city === target.city ? prev.pt : { k: -1, x: target.city.Lo.start }, target.pt));
     state.lastPos = target.key; save();
   }
   function walk(pts) {
@@ -306,7 +306,7 @@ function locate(avail, cities) {
   const c = cities.find(x => x.d === l.district);
   const lv = c.Lo.levels.find(v => v.stops.some(s => s.lesson === l));
   const both = avail.filter(a => lv.stops.some(s => s.lesson === a)).length > 1;
-  const x = both ? C : lv.stops.find(s => s.lesson === l).x;
+  const x = both ? lv.exit : lv.stops.find(s => s.lesson === l).x;
   return { city: c, pt: { k: lv.k, x }, key: `${l.district.id}:${lv.k}:${x}` };
 }
 function locateId(key, cities) {

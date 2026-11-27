@@ -71,6 +71,14 @@ restoreIfNeeded().then(() => route(), () => route());
 
 // ── PWA ──
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  // po pobraniu nowej wersji: przeładuj sam (poza lekcją i grą, żeby nie przerywać)
+  const hadSW = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadSW || reloaded) return;
+    if (/^#\/(lesson|game|weak)/.test(location.hash)) { toast(t('pwa.updated'), 5000); return; }
+    reloaded = true; location.reload();
+  });
   addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').then(reg => {
       reg.addEventListener('updatefound', () => {

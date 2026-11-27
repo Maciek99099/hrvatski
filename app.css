@@ -14,7 +14,7 @@
   --bt1: #3e5a66; --bt2: #47636e; --bt3: #36505b; --bt4: #6a4b40; --bt5: #4d5f52; --bfr: #b19e7d; --bwl: #f0c766; --bwd: #3b4c52; --bsh: rgba(10, 18, 22, .5); --bhl: rgba(255, 255, 255, .1);
   --pkt: #2f5a3c; --pkf: #1f3a29; --pkp: rgba(214, 196, 150, .22); --tcr: #4f8a5a; --tch: #6aa56f; --ttr: #5a4030; --tsh: rgba(10, 18, 22, .45); --pnd: #2f6f8f; --pnr: #274a37; --pnh: rgba(255, 255, 255, .28);
   --shadow: 0 8px 24px rgba(0, 0, 0, .28); --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --sal: env(safe-area-inset-left); --sar: env(safe-area-inset-right);
-  --tab-h: 58px; --tabsab: max(6px, calc(var(--sab) - 14px)); color-scheme: dark;
+  --tab-h: 64px; --tabsab: var(--sab); color-scheme: dark;
 }
 [data-theme=light] {
   --bg: #f4ecdc; --bg2: #fbf6ec; --card: #ffffff; --card2: #efe5d2; --card3: #e4d6bd; --line: rgba(27, 42, 49, .08);
@@ -63,7 +63,7 @@ h1 { font-size: 1.75rem; } h2 { font-size: 1.4rem; } h3 { font-size: 1.1rem; }
 /* powłoka */
 .shell { height: 100%; display: flex; flex-direction: column; }
 .view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(var(--tab-h) + var(--tabsab)); }
-.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; padding: 6px max(8px, var(--sal)) var(--tabsab) max(8px, var(--sar)); background: var(--bg2); border-top: 1px solid var(--line); }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; padding: 6px max(8px, var(--sal)) calc(6px + var(--sab)) max(8px, var(--sar)); background: var(--bg2); border-top: 1px solid var(--line); }
 .tabbar a { position: relative; flex: 1; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--mut); text-decoration: none; font-size: .72rem; font-weight: 800; }
 .tabbar a.on { color: var(--gold); }
 .tabbar .dot { position: absolute; top: 2px; left: 56%; background: var(--terra); color: #fff; font-style: normal; font-size: .66rem; font-weight: 900; padding: 0 6px; border-radius: 9px; }
